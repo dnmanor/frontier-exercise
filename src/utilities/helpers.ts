@@ -25,3 +25,7 @@ export const downloadFile = (fileUrl: string, destination: string) =>
       })
       .on("error", reject);
   });
+
+export function sleeper(delay: number) {
+  return new Promise((resolve) => setTimeout(resolve, delay));
+}

@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json({ limit: "20mb" }));
 app.use(cors());
-app.use(timeout("5s"));
+app.use(timeout("100s"));
 app.use(haltOnTimedout);
 
 app.use(applicationsRouter);

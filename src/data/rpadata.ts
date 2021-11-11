@@ -7,7 +7,6 @@ export const data: RpaData = {
   lastname: "input[name='lastname']",
   email: "input[name='email']",
   file: "input[type='file']",
-  option: "div[role='option']",
   phone: "input[name='phoneno']",
   location: "input[name='location']",
   linkedin: "input[name='linkedin']",

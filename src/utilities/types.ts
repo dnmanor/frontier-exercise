@@ -26,7 +26,6 @@ export interface RpaData {
   lastname: string;
   email: string;
   file: string;
-  option: string;
   phone: string;
   location: string;
   linkedin: string;

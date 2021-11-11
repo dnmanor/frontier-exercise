@@ -1,6 +1,5 @@
-import { Application } from "express";
 import { Page } from "puppeteer";
-import { downloadFile, generateFileName } from "./helpers";
+import { downloadFile, generateFileName, sleeper } from "./helpers";
 import { logToFile } from "./logger";
 
 export const visitURL = async (url: string, page: Page, timeout: number) => {
@@ -44,13 +43,15 @@ export const typeLocation = async (
   await await logToFile("Typing " + location + " on form", "rpabot");
   await page.focus(locationSelector);
   await page.click(locationSelector);
-  await page.keyboard.type(location, { delay: 300 });
-  await logToFile("Waiting for Location Options", "rpabot");
-  await page.waitForSelector(optionSelector, { visible: true });
-  await logToFile("Options Available", "rpabot");
-  await page.click(locationSelector);
-  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Control");
+  await page.keyboard.press("Backspace");
+  await page.type(locationSelector, location, { delay: 800 });
+
+  await sleeper(5000).then(() => {
+    page.keyboard.press("ArrowDown");
+  });
   await page.keyboard.press("Enter");
+
   return;
 };
 

@@ -7,6 +7,7 @@ import {
   uploadFile,
   visitURL,
 } from "./utilities/actions";
+import { sleeper } from "./utilities/helpers";
 import {
   JobApplication,
   RpaData,
@@ -67,48 +68,50 @@ export const sendApplicationToATS = async (
     application.location
   );
 
-  await clickElement(application.form.resumeBtn, page, DEFAULT_TIMEOUT);
-
-  await uploadFile(page, application.form.file, application.resume);
-
-  await clickElement(
-    application.form.optionalQuestionsBtn,
-    page,
-    DEFAULT_DELAY
-  );
-
-  await singleSelect(
-    application.form.remoteQt,
-    page,
-    application.worked_remote
-  );
-
-  await singleSelect(
-    application.form.startUpQt,
-    page,
-    application.worked_startup
-  );
-
-  await type(
-    application.form.linkedin,
-    page,
-    application.linkedin,
-    DEFAULT_DELAY
-  );
-
-  await page.waitForSelector(application.form.reviewBtn, {
-    timeout: DEFAULT_TIMEOUT,
-    visible: true,
+  await sleeper(2000).then(() => {
+    clickElement(application.form.resumeBtn, page, DEFAULT_TIMEOUT);
   });
 
-  await clickElement(application.form.reviewBtn, page, DEFAULT_DELAY);
+  // await uploadFile(page, application.form.file, application.resume);
 
-  await page.waitForSelector(application.form.doneBtn, {
-    timeout: DEFAULT_TIMEOUT,
-    visible: true,
-  });
+  // await clickElement(
+  //   application.form.optionalQuestionsBtn,
+  //   page,
+  //   DEFAULT_DELAY
+  // );
 
-  await clickElement(application.form.doneBtn, page, DEFAULT_DELAY);
+  //   await singleSelect(
+  //     application.form.remoteQt,
+  //     page,
+  //     application.worked_remote
+  //   );
+
+  //   await singleSelect(
+  //     application.form.startUpQt,
+  //     page,
+  //     application.worked_startup
+  //   );
+
+  //   await type(
+  //     application.form.linkedin,
+  //     page,
+  //     application.linkedin,
+  //     DEFAULT_DELAY
+  //   );
+
+  //   await page.waitForSelector(application.form.reviewBtn, {
+  //     timeout: DEFAULT_TIMEOUT,
+  //     visible: true,
+  //   });
+
+  //   await clickElement(application.form.reviewBtn, page, DEFAULT_DELAY);
+
+  //   await page.waitForSelector(application.form.doneBtn, {
+  //     timeout: DEFAULT_TIMEOUT,
+  //     visible: true,
+  //   });
+
+  //   await clickElement(application.form.doneBtn, page, DEFAULT_DELAY);
 
   //   await browser.close();
 
