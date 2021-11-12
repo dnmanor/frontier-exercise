@@ -1,5 +1,5 @@
-import https from "https";
-import fs from "fs";
+import fs, { WriteStream } from "fs";
+import http from "http";
 
 export const getFileExtension = (fileUrl: string): string => {
   const values = fileUrl.split(".");
@@ -7,15 +7,17 @@ export const getFileExtension = (fileUrl: string): string => {
 };
 
 export const generateFileName = (fileUrl: string): string => {
-  return `${process.cwd()}/assets/resume_${Date.now()}.${getFileExtension(
+  return `${process.cwd()}/src/assets/resume_${Date.now()}.${getFileExtension(
     fileUrl
   )}`;
 };
 
 export const downloadFile = (fileUrl: string, destination: string) =>
   new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(destination);
-    https
+    const file: WriteStream = fs.createWriteStream(destination, {
+      flags: "w+",
+    });
+    http
       .get(fileUrl, function (response) {
         response.pipe(file);
         file.on("finish", function (): void {

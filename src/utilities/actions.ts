@@ -15,7 +15,7 @@ export const clickElement = async (
   delay: number
 ) => {
   await logToFile("Clicking Element", "rpabot");
-  await page.click(selector);
+  await page.click(selector, { delay: delay });
   //   await page.waitForNavigation({
   //     waitUntil: ["load"],
   //   });
@@ -79,7 +79,7 @@ export const singleSelect = async (
   value: string
 ) => {
   if (value) {
-    const elements = await page.$x(selectors.value);
+    const elements = await page.$x(selectors[value]);
     await elements[0].click();
   }
 

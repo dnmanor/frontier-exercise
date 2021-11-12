@@ -25,98 +25,111 @@ export const sendApplicationToATS = async (
   application: Application,
   headless: boolean
 ): Promise<RpaSubmissionStatus> => {
-  const browser: Browser = await puppeteer.launch({
-    headless: headless,
-  });
-  const page: Page = await browser.newPage();
+  try {
+    const browser: Browser = await puppeteer.launch({
+      headless: headless,
+    });
+    const page: Page = await browser.newPage();
 
-  await page.setDefaultNavigationTimeout(0);
-  await page.setDefaultTimeout(0);
+    await page.setDefaultNavigationTimeout(0);
+    await page.setDefaultTimeout(0);
 
-  await visitURL(application.form.url, page, DEFAULT_TIMEOUT);
+    await visitURL(application.form.url, page, DEFAULT_TIMEOUT);
 
-  await page.waitForSelector(application.form.applyBtn, {
-    timeout: DEFAULT_TIMEOUT,
-    visible: true,
-  });
+    await page.waitForSelector(application.form.applyBtn, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
 
-  await clickElement(application.form.applyBtn, page, DEFAULT_TIMEOUT);
+    await clickElement(application.form.applyBtn, page, DEFAULT_TIMEOUT);
 
-  await page.waitForSelector(application.form.firstname, {
-    timeout: DEFAULT_TIMEOUT,
-    visible: true,
-  });
+    await page.waitForSelector(application.form.firstname, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
 
-  await type(
-    application.form.firstname,
-    page,
-    application.firstname,
-    DEFAULT_DELAY
-  );
-  await type(
-    application.form.lastname,
-    page,
-    application.lastname,
-    DEFAULT_DELAY
-  );
-  await type(application.form.email, page, application.email, DEFAULT_DELAY);
-  await type(application.form.phone, page, application.phone, DEFAULT_DELAY);
-  await typeLocation(
-    page,
-    application.form.locationSelector,
-    application.form.optionSelector,
-    application.location
-  );
+    await type(
+      application.form.firstname,
+      page,
+      application.firstname,
+      DEFAULT_DELAY
+    );
+    await type(
+      application.form.lastname,
+      page,
+      application.lastname,
+      DEFAULT_DELAY
+    );
+    await type(application.form.email, page, application.email, DEFAULT_DELAY);
+    await type(application.form.phone, page, application.phone, DEFAULT_DELAY);
+    await typeLocation(
+      page,
+      application.form.locationSelector,
+      application.form.optionSelector,
+      application.location
+    );
 
-  await sleeper(2000).then(() => {
-    clickElement(application.form.resumeBtn, page, DEFAULT_TIMEOUT);
-  });
+    await sleeper(2000).then(() => {
+      clickElement(application.form.resumeBtn, page, DEFAULT_TIMEOUT);
+    });
 
-  // await uploadFile(page, application.form.file, application.resume);
+    await page.waitForNavigation({
+      waitUntil: ["networkidle0", "domcontentloaded"],
+    });
 
-  // await clickElement(
-  //   application.form.optionalQuestionsBtn,
-  //   page,
-  //   DEFAULT_DELAY
-  // );
+    await uploadFile(page, application.form.file, application.resume);
 
-  //   await singleSelect(
-  //     application.form.remoteQt,
-  //     page,
-  //     application.worked_remote
-  //   );
+    await sleeper(6000).then(() => {
+      clickElement(application.form.optionalQuestionsBtn, page, DEFAULT_DELAY);
+    });
 
-  //   await singleSelect(
-  //     application.form.startUpQt,
-  //     page,
-  //     application.worked_startup
-  //   );
+    await page.waitForNavigation({
+      waitUntil: ["networkidle0", "domcontentloaded"],
+    });
 
-  //   await type(
-  //     application.form.linkedin,
-  //     page,
-  //     application.linkedin,
-  //     DEFAULT_DELAY
-  //   );
+    await sleeper(DEFAULT_TIMEOUT).then(() => {
+      singleSelect(application.form.remoteQt, page, application.worked_remote);
+    });
 
-  //   await page.waitForSelector(application.form.reviewBtn, {
-  //     timeout: DEFAULT_TIMEOUT,
-  //     visible: true,
-  //   });
+    await sleeper(DEFAULT_TIMEOUT).then(() => {
+      singleSelect(
+        application.form.startUpQt,
+        page,
+        application.worked_startup
+      );
+    });
 
-  //   await clickElement(application.form.reviewBtn, page, DEFAULT_DELAY);
+    await type(
+      application.form.linkedin,
+      page,
+      application.linkedin,
+      DEFAULT_DELAY
+    );
 
-  //   await page.waitForSelector(application.form.doneBtn, {
-  //     timeout: DEFAULT_TIMEOUT,
-  //     visible: true,
-  //   });
+    await page.waitForSelector(application.form.reviewBtn, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
 
-  //   await clickElement(application.form.doneBtn, page, DEFAULT_DELAY);
+    await clickElement(application.form.reviewBtn, page, DEFAULT_DELAY);
 
-  //   await browser.close();
+    await page.waitForSelector(application.form.doneBtn, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
 
-  return {
-    error: false,
-    code: 200,
-  };
+    await clickElement(application.form.doneBtn, page, DEFAULT_DELAY);
+
+    await browser.close();
+
+    return {
+      error: false,
+      code: 200,
+    };
+  } catch (error) {
+    return {
+      error: true,
+      code: 420,
+    };
+  }
 };
