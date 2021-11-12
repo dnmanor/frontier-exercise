@@ -62,7 +62,7 @@ There are two log groups found in the root directory
 
 # API
 
-## Enpoint
+## Endpoint
 
 `POST /forms/frontier/applications`
 
