@@ -8,6 +8,7 @@ import {
   visitURL,
 } from "./utilities/actions";
 import { sleeper } from "./utilities/helpers";
+import { logToFile } from "./utilities/logger";
 import {
   JobApplication,
   RpaData,
@@ -29,58 +30,54 @@ export const sendApplicationToATS = async (
     const browser: Browser = await puppeteer.launch({
       headless: headless,
     });
+    const selectors = application.form;
+
     const page: Page = await browser.newPage();
 
     await page.setDefaultNavigationTimeout(0);
     await page.setDefaultTimeout(0);
 
-    await visitURL(application.form.url, page, DEFAULT_TIMEOUT);
+    await visitURL(selectors.url, page, DEFAULT_TIMEOUT);
 
-    await page.waitForSelector(application.form.applyBtn, {
+    await page.waitForSelector(selectors.applyBtn, {
       timeout: DEFAULT_TIMEOUT,
       visible: true,
     });
 
-    await clickElement(application.form.applyBtn, page, DEFAULT_TIMEOUT);
+    await clickElement(selectors.applyBtn, page, DEFAULT_TIMEOUT);
 
-    await page.waitForSelector(application.form.firstname, {
+    await page.waitForSelector(selectors.firstname, {
       timeout: DEFAULT_TIMEOUT,
       visible: true,
     });
 
-    await type(
-      application.form.firstname,
-      page,
-      application.firstname,
-      DEFAULT_DELAY
-    );
-    await type(
-      application.form.lastname,
-      page,
-      application.lastname,
-      DEFAULT_DELAY
-    );
-    await type(application.form.email, page, application.email, DEFAULT_DELAY);
-    await type(application.form.phone, page, application.phone, DEFAULT_DELAY);
+    await type(selectors.firstname, page, application.firstname, DEFAULT_DELAY);
+    await type(selectors.lastname, page, application.lastname, DEFAULT_DELAY);
+    await type(selectors.email, page, application.email, DEFAULT_DELAY);
+    await type(selectors.phone, page, application.phone, DEFAULT_DELAY);
     await typeLocation(
       page,
-      application.form.locationSelector,
-      application.form.optionSelector,
+      selectors.locationSelector,
+      selectors.optionSelector,
       application.location
     );
 
     await sleeper(2000).then(() => {
-      clickElement(application.form.resumeBtn, page, DEFAULT_TIMEOUT);
+      clickElement(selectors.resumeBtn, page, DEFAULT_TIMEOUT);
     });
 
     await page.waitForNavigation({
       waitUntil: ["networkidle0", "domcontentloaded"],
     });
 
-    await uploadFile(page, application.form.file, application.resume);
+    await page.waitForSelector(selectors.file, {
+      timeout: DEFAULT_TIMEOUT * 2,
+    });
+
+    await uploadFile(page)(selectors.file, application.resume);
 
     await sleeper(6000).then(() => {
-      clickElement(application.form.optionalQuestionsBtn, page, DEFAULT_DELAY);
+      clickElement(selectors.optionalQuestionsBtn, page, DEFAULT_DELAY);
     });
 
     await page.waitForNavigation({
@@ -88,37 +85,40 @@ export const sendApplicationToATS = async (
     });
 
     await sleeper(DEFAULT_TIMEOUT).then(() => {
-      singleSelect(application.form.remoteQt, page, application.worked_remote);
+      singleSelect(selectors.remoteQt, page, application.worked_remote);
     });
 
     await sleeper(DEFAULT_TIMEOUT).then(() => {
-      singleSelect(
-        application.form.startUpQt,
-        page,
-        application.worked_startup
-      );
+      singleSelect(selectors.startUpQt, page, application.worked_startup);
     });
 
-    await type(
-      application.form.linkedin,
-      page,
-      application.linkedin,
-      DEFAULT_DELAY
+    await type(selectors.linkedin, page, application.linkedin, DEFAULT_DELAY);
+
+    await page.waitForSelector(selectors.reviewBtn, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
+
+    await clickElement(selectors.reviewBtn, page, DEFAULT_DELAY);
+
+    await page.waitForSelector(selectors.doneBtn, {
+      timeout: DEFAULT_TIMEOUT,
+      visible: true,
+    });
+
+    await clickElement(selectors.doneBtn, page, DEFAULT_DELAY);
+
+    await page.waitForSelector("*[data-testid='form-submission-done-title']", {
+      timeout: DEFAULT_TIMEOUT,
+    });
+
+    const doneText = await page.$(
+      "*[data-testid='form-submission-done-title']"
     );
 
-    await page.waitForSelector(application.form.reviewBtn, {
-      timeout: DEFAULT_TIMEOUT,
-      visible: true,
-    });
-
-    await clickElement(application.form.reviewBtn, page, DEFAULT_DELAY);
-
-    await page.waitForSelector(application.form.doneBtn, {
-      timeout: DEFAULT_TIMEOUT,
-      visible: true,
-    });
-
-    await clickElement(application.form.doneBtn, page, DEFAULT_DELAY);
+    if (doneText) {
+      await logToFile("Application Submitted Succesfully", "rpabot");
+    }
 
     await browser.close();
 

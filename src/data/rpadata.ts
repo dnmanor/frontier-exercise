@@ -9,10 +9,10 @@ export const data: RpaData = {
   file: "input[type='file']",
   phone: "input[name='phoneno']",
   location: "input[name='location']",
-  linkedin: "input[name='linkedin']",
+  linkedin: "input[name='linkedin2']",
   reviewBtn: "a[href='/jobs/190562/apply/review']",
   resumeBtn: "a[href='/jobs/190562/apply/resume']",
-  doneBtn: "a[href='/jobs/190562/apply/done']",
+  doneBtn: "*[data-testid='form-submit-button']",
   optionSelector: "*[role='option']",
   locationSelector: "*[name='location']",
   optionalQuestionsBtn: "*[href='/jobs/190562/apply/optional']",
@@ -21,7 +21,7 @@ export const data: RpaData = {
     No: "/html/body/div[1]/main/div/div/section/div[1]/div[2]/div/label[2]/span",
   },
   startUpQt: {
-    Yes: "/html/body/div[1]/main/div/div/section/div[1]/div[2]/div/label[1]/span",
-    No: "/html/body/div[1]/main/div/div/section/div[1]/div[2]/div/label[2]/span",
+    Yes: "/html/body/div[1]/main/div/div/section/div[2]/div[2]/div/label[1]/span",
+    No: "/html/body/div[1]/main/div/div/section/div[2]/div[2]/div/label[2]/span",
   },
 };

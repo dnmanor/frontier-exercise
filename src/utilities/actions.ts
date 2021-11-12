@@ -55,24 +55,21 @@ export const typeLocation = async (
   return;
 };
 
-export const uploadFile = async (
-  page: Page,
-  fileSelector: string,
-  fileUrl: string
-) => {
-  await logToFile("Uploading ", "rpabot");
-  const filePath = generateFileName(fileUrl);
-  await downloadFile(fileUrl, filePath);
-  const resumeUploadInput = await page.$(fileSelector);
-  await resumeUploadInput?.uploadFile(filePath as string);
+export const uploadFile =
+  (page: Page) => async (fileSelector: string, fileUrl: string) => {
+    const filePath = generateFileName(fileUrl);
+    await downloadFile(fileUrl, filePath);
+    await logToFile("Uploading file", "rpabot");
+    const resumeUploadInput = await page.$(fileSelector);
+    await resumeUploadInput?.uploadFile(filePath as string);
 
-  await page.waitForFunction(
-    () =>
-      !document
-        .querySelector("div")
-        ?.innerText.includes("Upload a file from this device")
-  );
-};
+    await page.waitForFunction(
+      () =>
+        !document
+          .querySelector("div")
+          ?.innerText.includes("Upload a file from this device")
+    );
+  };
 
 export const singleSelect = async (
   selectors: any,
