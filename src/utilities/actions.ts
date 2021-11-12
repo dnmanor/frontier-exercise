@@ -40,7 +40,7 @@ export const typeLocation = async (
   optionSelector: string,
   location: string
 ) => {
-  await await logToFile("Typing " + location + " on form", "rpabot");
+  await logToFile("Typing " + location + " on form", "rpabot");
   await page.focus(locationSelector);
   await page.click(locationSelector);
   await page.keyboard.press("Control");
@@ -60,6 +60,7 @@ export const uploadFile = async (
   fileSelector: string,
   fileUrl: string
 ) => {
+  await logToFile("Uploading ", "rpabot");
   const filePath = generateFileName(fileUrl);
   await downloadFile(fileUrl, filePath);
   const resumeUploadInput = await page.$(fileSelector);
@@ -78,6 +79,7 @@ export const singleSelect = async (
   page: Page,
   value: string
 ) => {
+  await logToFile("Selecting " + value, "rpabot");
   if (value) {
     const elements = await page.$x(selectors[value]);
     await elements[0].click();
