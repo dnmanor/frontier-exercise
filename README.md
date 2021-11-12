@@ -50,8 +50,15 @@ Demo of RPA at work
 
 - **Synchronous Pattern** \
   Hit API endpoint with payload, request is processed and response is sent to the API user accorndingly.
-- **Asynchronous Pattern**
+- **Asynchronous Pattern** \
   Hit API with payload, response `application queued` sent to the API user, worker in the background Submits Jobs and then Updates the API user with new response accordingly.
+
+# Logs
+
+There are two log groups found in the root directory
+
+- `rpabot.log` - for logs related to the RPA submission
+- `server.log` - for logs related to the server
 
 # API
 
@@ -89,16 +96,19 @@ Demo of RPA at work
 # Thoughts
 
 - **Overview :**
-  This was an interesting challenge, albeit straightforward it was interesting to tackle and see what decisions I will make. (Definetely a lot of optimizations here and there)
+  This was an interesting challenge, albeit straightforward it was interesting to tackle and see what decisions I will make. (Definetely a lot of optimizations here and there but this is enough for a client to use)
 
 - **Challenges :**
-  Working out a solution for the Location Field on the form. That took ~50% of the time spent on thhis
+  Working out a solution for the Google Location Field on the form. That took +50% of the time spent on this
 - **Improvements ?:**
-  None .
+  None.
+
+- **Suggestions :**
+  This may be for a more full stack role but a test where the candidate will mock The form provided (given freedom of design choices), and create an RPA pipeline to submit to the Frontier Form. (This way FE skills can be tested too)
 
 # Time Spent
 
 It took approximately 6hrs to get a stable working solution with 3 (~2hr) sessions
 
-![Screenshot](./media/screenshot1.png)
-![Screenshot](./media/screenshot2.png)
+![Screenshot](./media/Screenshot1.png)
+![Screenshot](./media/Screenshot2.png)
